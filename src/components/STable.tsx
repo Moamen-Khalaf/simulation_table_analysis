@@ -6,7 +6,7 @@ import Button from "./Button";
 import { getDataExcel } from "../utils/parseExcel";
 
 function STable() {
-  const simulationTable = useSIMStore((state) => state.simulationTable);
+  const rowTable = useSIMStore((state) => state.rowTable);
   const setTableData = useSIMStore((state) => state.setTableData);
 
   useEffect(() => {
@@ -23,16 +23,16 @@ function STable() {
   return (
     <div
       className="scale-90 transition-opacity duration-500 ease-in-out overflow-auto"
-      style={{ opacity: simulationTable.length ? 1 : 0 }}
+      style={{ opacity: rowTable.length ? 1 : 0 }}
     >
-      {simulationTable.length ? (
+      {rowTable.length ? (
         <>
-          <Table table={simulationTable} />
+          <Table table={rowTable} />
           <span className="flex justify-center gap-3">
             <Button
               onClick={() => {
                 const blob = new Blob(
-                  [simulationTable.map((row) => row.join(",")).join("\n")],
+                  [rowTable.map((row) => row.join(",")).join("\n")],
                   { type: "text/csv" }
                 );
                 const url = URL.createObjectURL(blob);
@@ -46,7 +46,7 @@ function STable() {
             </Button>
             <Button
               onClick={() => {
-                const blob = getDataExcel(simulationTable);
+                const blob = getDataExcel(rowTable);
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;

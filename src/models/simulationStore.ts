@@ -18,8 +18,9 @@ interface IStore {
   isLoading: boolean;
   error: null | string;
   users: Record<string, UserRow>;
-  simulationTable: string[][];
+  simulationTable: (string[] | { v: string; f: string; pos: string }[])[];
   setTableData: (table: string[][][]) => void;
+  rowTable: string[][];
   setSimulationTable: () => void;
   clear: () => void;
 }
@@ -77,6 +78,22 @@ function processTable(table: string[][][]): UserRow[] {
 
   return Object.values(userData);
 }
+function addPositionToTable(table: string[][]) {
+  const [header, ...rows] = table;
+  const newRows = rows.map((row, rowIndex) => {
+    const newRow: { v: string; f: string; pos: string }[] = [];
+    header.forEach((_key, i) => {
+      newRow.push({
+        v: row[i],
+        f: "",
+        pos: getPosition(i, rowIndex + 1),
+      });
+    });
+    return newRow;
+  });
+  return [header, ...newRows];
+}
+
 type IColumnHeader =
   | "CLIENT_ID"
   | "INTERARRIVALE_TIME"
@@ -98,6 +115,7 @@ const useSIMStore = create<IStore>()(
       isLoading: false,
       error: null,
       users: {},
+      rowTable: [],
       simulationTable: [],
       setSimulationTable: () => {},
       setTableData: (table: string[][][]) => {
@@ -105,12 +123,17 @@ const useSIMStore = create<IStore>()(
           set(() => ({ isLoading: true }));
           let users = processTable(table);
           users = simulate(users);
-          const simulationTable = [
+          let simulationTable = [
             tableHeaders,
             ...Object.values(users).map((user) => {
               return tableHeaders.map((key) => user[key as IColumnHeader]);
             }),
-          ] as string[][];
+          ] as (string[] | { v: string; f: string; pos: string }[])[];
+          set((state) => {
+            state.rowTable = simulationTable as string[][];
+          });
+          simulationTable = addPositionToTable(simulationTable as string[][]);
+
           set((state) => {
             state.simulationTable = simulationTable;
             state.users = users.reduce((acc, user) => {

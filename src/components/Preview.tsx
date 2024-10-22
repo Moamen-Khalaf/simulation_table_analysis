@@ -3,6 +3,7 @@ import useStore from "../models/table";
 import Table from "./Table";
 import Button from "./Button";
 import { MdOutlineRefresh } from "react-icons/md";
+import useSIMStore from "../models/simulationStore";
 
 export default function Preview() {
   const tables = useStore((state) => state.tables);
@@ -20,9 +21,10 @@ export default function Preview() {
           }`}
           onClick={() => {
             setRefresh(true);
+            useSIMStore.getState().setTableData(tables);
             setTimeout(() => {
               setRefresh(false);
-            }, 1500);
+            }, 2500);
           }}
         />
       </div>
