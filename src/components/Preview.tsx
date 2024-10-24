@@ -12,7 +12,7 @@ export default function Preview() {
   const [preview, setPreview] = useState(false);
   return tables.length ? (
     <>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center flex-col scale-90 md:flex-row md:scale-100">
         <Button onClick={() => setPreview(!preview)}>
           {preview ? "Hide" : "Show"} Preview
         </Button>
@@ -40,13 +40,13 @@ export default function Preview() {
       </div>
 
       <div
-        className={`transition-all duration-500 ease-in-out transform ${
+        className={`transition-all duration-500 ease-in-out transform scale-90 md:scale-100 ${
           preview
             ? "max-h-screen opacity-100 scale-100"
             : "max-h-0 opacity-0 scale-95"
-        } overflow-hidden`}
+        } overflow-auto`}
       >
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-col  md:flex-row ">
           {tables.map((table, index) => (
             <Table key={index} table={table} />
           ))}

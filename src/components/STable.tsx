@@ -34,22 +34,7 @@ function STable() {
       {simulationTable.length ? (
         <>
           <Table table={simulationTable} />
-          <span className="flex justify-center gap-3">
-            <Button
-              onClick={() => {
-                const blob = new Blob(
-                  [simulationTable.map((row) => row.join(",")).join("\n")],
-                  { type: "text/csv" }
-                );
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = "simulation.csv";
-                a.click();
-              }}
-            >
-              Save as CSV
-            </Button>
+          <span className="w-fit mx-auto block">
             <Button
               onClick={() => {
                 const blob = getDataExcel(simulationTable);
