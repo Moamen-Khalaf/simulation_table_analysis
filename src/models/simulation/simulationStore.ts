@@ -4,6 +4,7 @@ import { devtools } from "zustand/middleware";
 import { processTable } from "./utils/processTable";
 import { type IStore } from "./types";
 import simulate from "./utils/simulate";
+import useStore from "../table";
 
 const useSIMStore = create<IStore>()(
   devtools(
@@ -12,17 +13,19 @@ const useSIMStore = create<IStore>()(
       error: null,
       rawTable: [],
       simulationTable: [],
-      setTableData: (table: string[][][]) => {
+      setTableData: () => {
         try {
-          set(() => ({ isLoading: true }));
-          const users = processTable(table);
+          set(() => ({ isLoading: true, error: null }));
+          const table = useStore.getState().tables;
+          const users = processTable(
+            table.map((row) => row.map((cell) => cell.map((cell) => cell.v)))
+          );
           const simulationTable = simulate(users);
           set((state) => {
             state.simulationTable = simulationTable;
             state.rawTable = simulationTable.map((row) =>
               row.map((cell) => cell.v)
             );
-            console.log("Processed table", state.rawTable);
           });
         } catch (error) {
           console.error(error);

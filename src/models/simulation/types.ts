@@ -30,6 +30,6 @@ export interface IStore {
   error: null | string;
   simulationTable: cellType[][];
   rawTable: string[][];
-  setTableData: (table: string[][][]) => void;
+  setTableData: () => void;
   clear: () => void;
 }

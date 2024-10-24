@@ -70,6 +70,6 @@ export default function simulate(users: UserRow[]): cellType[][] {
       return tableHeaders.map((key) => user[key as IColumnHeader]);
     }),
   ] as cellType[][];
-  console.log(simulationTable);
+
   return simulationTable;
 }

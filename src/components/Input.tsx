@@ -2,7 +2,7 @@ import useStore from "../models/table";
 import Button from "./Button";
 import Preview from "./Preview";
 import useSIMStore from "../models/simulation/simulationStore";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 function Input() {
   const setTables = useStore((state) => state.setTables);
@@ -13,14 +13,24 @@ function Input() {
   const clearMain = useSIMStore((state) => state.clear);
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
   return (
     <div className="p-4 mt-5 bg-white shadow-md rounded-md mx-2 md:mx-10 lg:mx-20">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 justify-between">
+        <label htmlFor="file">
+          <Button
+            disabled={isLoading}
+            onClick={() => inputRef.current?.click()}
+          >
+            {isLoading ? "Loading..." : "Upload"}
+          </Button>
+        </label>
         <input
           type="file"
           accept=".xlsx"
           ref={inputRef}
-          className="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 focus:outline-none"
+          id="file"
+          className="hidden"
           onChange={(e) => {
             const file = e.target.files?.[0];
             if (file) {
@@ -29,12 +39,14 @@ function Input() {
                 const buffer = e.target?.result;
                 if (buffer instanceof ArrayBuffer) {
                   setTables(buffer);
+                  setFileName(file.name);
                 }
               };
               reader.readAsArrayBuffer(file);
             }
           }}
         />
+        <label>{fileName || "No file selected"}</label>
         <Button
           onClick={() => {
             if (inputRef.current) {

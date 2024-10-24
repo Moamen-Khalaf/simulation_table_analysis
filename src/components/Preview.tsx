@@ -7,10 +7,7 @@ import useSIMStore from "../models/simulation/simulationStore";
 import type { cellType } from "../models/simulation/types";
 
 export default function Preview() {
-  const tables: cellType[][][] = useStore((state) => state.tables).map(
-    (table) =>
-      table.map((row) => row.map((cell) => ({ v: cell, pos: "", f: "" })))
-  );
+  const tables: cellType[][][] = useStore((state) => state.tables);
   const [refresh, setRefresh] = useState(false);
   const [preview, setPreview] = useState(false);
   return tables.length ? (
@@ -19,17 +16,16 @@ export default function Preview() {
         <Button onClick={() => setPreview(!preview)}>
           {preview ? "Hide" : "Show"} Preview
         </Button>
+        <input
+          type="text"
+          name="cellValue"
+          className="flex-grow px-2 py-1 border border-gray-400 rounded-md mx-5 outline-none"
+        />
         <Button
           disabled={refresh}
           onClick={() => {
             setRefresh(true);
-            useSIMStore
-              .getState()
-              .setTableData(
-                tables.map((table) =>
-                  table.map((row) => row.map((cell) => cell.v))
-                )
-              );
+            useSIMStore.getState().setTableData();
             setTimeout(() => {
               setRefresh(false);
             }, 2500);
@@ -42,6 +38,7 @@ export default function Preview() {
           />
         </Button>
       </div>
+
       <div
         className={`transition-all duration-500 ease-in-out transform ${
           preview

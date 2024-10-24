@@ -2,9 +2,10 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import parseExcel from "../utils/parseExcel";
 import { subscribeWithSelector } from "zustand/middleware";
+import type { cellType } from "./simulation/types";
 
 interface IStore {
-  tables: string[][][];
+  tables: cellType[][][];
   isLoading: boolean;
   error: string | null;
   setTables: (buffer: BufferSource) => void;

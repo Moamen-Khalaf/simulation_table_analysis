@@ -8,13 +8,15 @@ import { getDataExcel } from "../utils/parseExcel";
 function STable() {
   const simulationTable = useSIMStore((state) => state.simulationTable);
   const setTableData = useSIMStore((state) => state.setTableData);
+  const error = useSIMStore((state) => state.error);
+  const isLoading = useSIMStore((state) => state.isLoading);
 
   useEffect(() => {
     const unsubscribe = useStore.subscribe(
       (state) => state.tables,
       (tables) => {
         if (tables.length) {
-          setTableData(tables);
+          setTableData();
         }
       }
     );
@@ -25,6 +27,10 @@ function STable() {
       className="scale-90 transition-opacity duration-500 ease-in-out overflow-auto"
       style={{ opacity: simulationTable.length ? 1 : 0 }}
     >
+      {isLoading && <div className="text-center">Loading...</div>}
+      {error && (
+        <div className="text-center text-red-500 text-[1rem] my-5">{error}</div>
+      )}
       {simulationTable.length ? (
         <>
           <Table table={simulationTable} />

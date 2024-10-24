@@ -2,30 +2,33 @@ import * as XLSX from "xlsx";
 import type { cellType } from "../models/simulation/types";
 
 export default function parseExcel(fileBuffer: BufferSource) {
-  const workbook = XLSX.read(fileBuffer, { type: "buffer" });
+  const workbook = XLSX.read(fileBuffer, { type: "buffer", raw: true });
 
   const sheetName = workbook.SheetNames[0];
   const worksheet = workbook.Sheets[sheetName];
 
-  const jsonData = XLSX.utils.sheet_to_json(worksheet, { raw: true });
+  const jsonData: (string | number)[][] = XLSX.utils.sheet_to_json(worksheet, {
+    raw: true,
+    header: 1,
+  });
+
   const tables: string[][][] = [[]];
-
+  let blankRow = false;
   jsonData.forEach((row) => {
-    const rowDetails = Object.values(row as Record<string, unknown>);
-    if (!Array.isArray(rowDetails)) {
-      throw new Error("Expected row to be an array");
-    }
-
-    if (
-      rowDetails.find((value) => String(value).toUpperCase() === "__TABLE__")
-    ) {
-      tables.push([]);
+    if (row.length === 0) {
+      blankRow = true;
       return;
     }
-
-    tables[tables.length - 1].push(rowDetails as string[]);
+    if (blankRow) {
+      tables.push([]);
+      blankRow = false;
+    }
+    tables[tables.length - 1].push(row as string[]);
   });
-  return tables;
+
+  return tables.map((table) =>
+    table.map((row) => row.map((cell) => ({ v: cell, pos: "", f: "" })))
+  );
 }
 export function getPosition(colIndex: number, rowIndex: number) {
   return XLSX.utils.encode_cell({ c: colIndex, r: rowIndex });
