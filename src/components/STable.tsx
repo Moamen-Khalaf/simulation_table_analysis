@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import useSIMStore from "../models/simulationStore";
+import useSIMStore from "../models/simulation/simulationStore";
 import useStore from "../models/table";
 import Table from "./Table";
 import Button from "./Button";
 import { getDataExcel } from "../utils/parseExcel";
 
 function STable() {
-  const rowTable = useSIMStore((state) => state.rowTable);
+  const rawTable = useSIMStore((state) => state.rawTable);
   const setTableData = useSIMStore((state) => state.setTableData);
 
   useEffect(() => {
@@ -23,16 +23,16 @@ function STable() {
   return (
     <div
       className="scale-90 transition-opacity duration-500 ease-in-out overflow-auto"
-      style={{ opacity: rowTable.length ? 1 : 0 }}
+      style={{ opacity: rawTable.length ? 1 : 0 }}
     >
-      {rowTable.length ? (
+      {rawTable.length ? (
         <>
-          <Table table={rowTable} />
+          <Table table={rawTable} />
           <span className="flex justify-center gap-3">
             <Button
               onClick={() => {
                 const blob = new Blob(
-                  [rowTable.map((row) => row.join(",")).join("\n")],
+                  [rawTable.map((row) => row.join(",")).join("\n")],
                   { type: "text/csv" }
                 );
                 const url = URL.createObjectURL(blob);
@@ -46,7 +46,7 @@ function STable() {
             </Button>
             <Button
               onClick={() => {
-                const blob = getDataExcel(rowTable);
+                const blob = getDataExcel(rawTable);
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;

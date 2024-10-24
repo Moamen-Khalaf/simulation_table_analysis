@@ -3,7 +3,7 @@ import useStore from "../models/table";
 import Table from "./Table";
 import Button from "./Button";
 import { MdOutlineRefresh } from "react-icons/md";
-import useSIMStore from "../models/simulationStore";
+import useSIMStore from "../models/simulation/simulationStore";
 
 export default function Preview() {
   const tables = useStore((state) => state.tables);
@@ -36,8 +36,16 @@ export default function Preview() {
         } overflow-hidden`}
       >
         <div className="flex gap-3">
-          {tables.map((table, index) => (
-            <Table key={index} table={table} />
+          {tables.map((table, rowIndex) => (
+            <Table
+              key={rowIndex}
+              table={table}
+              // table={table.map((val, colIndex) => ({
+              //   v: val,
+              //   f: "",
+              //   pos: getPosition(colIndex, rowIndex),
+              // }))}
+            />
           ))}
         </div>
       </div>

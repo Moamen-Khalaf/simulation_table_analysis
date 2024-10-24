@@ -1,7 +1,7 @@
 import useStore from "../models/table";
 import Button from "./Button";
 import Preview from "./Preview";
-import useSIMStore from "../models/simulationStore";
+import useSIMStore from "../models/simulation/simulationStore";
 import { useRef } from "react";
 
 function Input() {
