@@ -21,11 +21,11 @@ export default function simulate(users: UserRow[]): cellType[][] {
     acc[key as IColumnHeader] = {
       v: "",
       f: "",
-      pos: "NULL",
+      pos: "0",
     } as cellType;
     return acc;
   }, {} as UserRow);
-  const usersData = users.map((user) => {
+  const usersData = users.map((user, index) => {
     clock += +user.INTERARRIVAL_TIME.v;
     const arrivalTime = +clock;
     const serviceTime = +user.SERVICE_TIME.v;
@@ -39,21 +39,23 @@ export default function simulate(users: UserRow[]): cellType[][] {
         : "BUSY";
 
     user.ARRIVAL_TIME.v = arrivalTime.toString();
-    user.ARRIVAL_TIME.f = `${Methods.SUM}(${user.INTERARRIVAL_TIME.pos},${lastUser.ARRIVAL_TIME.pos})`;
 
     user.TIME_SER_BEG.v = timeServBeg.toString();
-    user.TIME_SER_BEG.f = `${Methods.MAX}(${user.ARRIVAL_TIME.pos},${lastUser.TIME_SER_ENDS.pos})`;
 
     user.SERVICE_TIME.v = serviceTime.toString();
 
     user.TIME_SER_ENDS.v = timeServEnds.toString();
-    user.TIME_SER_ENDS.f = `${Methods.SUM}(${user.TIME_SER_BEG.pos},${user.SERVICE_TIME.pos})`;
 
     user.CUST_STATE.v = custState;
-    user.CUST_STATE.f = `${Methods.IF}(${user.TIME_SER_BEG.pos}>${user.ARRIVAL_TIME.pos},"${custState}","SERV")`;
+    if (index > 0) {
+      user.ARRIVAL_TIME.f = `${user.INTERARRIVAL_TIME.pos}+${lastUser.ARRIVAL_TIME.pos}`;
+      user.TIME_SER_BEG.f = `${Methods.MAX}(${user.ARRIVAL_TIME.pos},${lastUser.TIME_SER_ENDS.pos})`;
+      user.TIME_SER_ENDS.f = `${user.TIME_SER_BEG.pos}+${user.SERVICE_TIME.pos}`;
+      user.CUST_STATE.f = `${Methods.IF}(${user.TIME_SER_BEG.pos}>${user.ARRIVAL_TIME.pos},"${custState}","SERV")`;
+      user.SYSTEM_STATE.f = `${Methods.IF}(${user.ARRIVAL_TIME.pos}-${lastUser.TIME_SER_ENDS.pos}>0,"${systemState}","BUSY")`;
+    }
 
     user.SYSTEM_STATE.v = systemState.toString();
-    user.SYSTEM_STATE.f = `${Methods.IF}(${user.ARRIVAL_TIME.pos}-${lastUser.TIME_SER_ENDS.pos}>0,"${systemState}","BUSY")`;
 
     lastUser = user;
     return user;

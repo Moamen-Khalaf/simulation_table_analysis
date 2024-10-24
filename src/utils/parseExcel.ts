@@ -1,4 +1,5 @@
 import * as XLSX from "xlsx";
+import type { cellType } from "../models/simulation/types";
 
 export default function parseExcel(fileBuffer: BufferSource) {
   const workbook = XLSX.read(fileBuffer, { type: "buffer" });
@@ -32,7 +33,7 @@ export function getPosition(colIndex: number, rowIndex: number) {
 export function getPositionCoordinates(position: string) {
   return XLSX.utils.decode_cell(position);
 }
-export function getDataExcel(tables: string[][]) {
+export function getDataExcel(tables: cellType[][]) {
   const newFile = XLSX.utils.aoa_to_sheet(tables);
   const newWorkbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(newWorkbook, newFile, "Sheet1");

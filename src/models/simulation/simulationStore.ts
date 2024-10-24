@@ -22,6 +22,7 @@ const useSIMStore = create<IStore>()(
             state.rawTable = simulationTable.map((row) =>
               row.map((cell) => cell.v)
             );
+            console.log("Processed table", state.rawTable);
           });
         } catch (error) {
           console.error(error);

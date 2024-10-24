@@ -4,9 +4,13 @@ import Table from "./Table";
 import Button from "./Button";
 import { MdOutlineRefresh } from "react-icons/md";
 import useSIMStore from "../models/simulation/simulationStore";
+import type { cellType } from "../models/simulation/types";
 
 export default function Preview() {
-  const tables = useStore((state) => state.tables);
+  const tables: cellType[][][] = useStore((state) => state.tables).map(
+    (table) =>
+      table.map((row) => row.map((cell) => ({ v: cell, pos: "", f: "" })))
+  );
   const [refresh, setRefresh] = useState(false);
   const [preview, setPreview] = useState(false);
   return tables.length ? (
@@ -15,18 +19,28 @@ export default function Preview() {
         <Button onClick={() => setPreview(!preview)}>
           {preview ? "Hide" : "Show"} Preview
         </Button>
-        <MdOutlineRefresh
-          className={`text-[2rem] cursor-pointer text-gray-500 ${
-            refresh ? "animate-spin" : ""
-          }`}
+        <Button
+          disabled={refresh}
           onClick={() => {
             setRefresh(true);
-            useSIMStore.getState().setTableData(tables);
+            useSIMStore
+              .getState()
+              .setTableData(
+                tables.map((table) =>
+                  table.map((row) => row.map((cell) => cell.v))
+                )
+              );
             setTimeout(() => {
               setRefresh(false);
             }, 2500);
           }}
-        />
+        >
+          <MdOutlineRefresh
+            className={`text-[1.5rem] cursor-pointer text-white ${
+              refresh ? "animate-spin" : ""
+            }`}
+          />
+        </Button>
       </div>
       <div
         className={`transition-all duration-500 ease-in-out transform ${
@@ -36,16 +50,8 @@ export default function Preview() {
         } overflow-hidden`}
       >
         <div className="flex gap-3">
-          {tables.map((table, rowIndex) => (
-            <Table
-              key={rowIndex}
-              table={table}
-              // table={table.map((val, colIndex) => ({
-              //   v: val,
-              //   f: "",
-              //   pos: getPosition(colIndex, rowIndex),
-              // }))}
-            />
+          {tables.map((table, index) => (
+            <Table key={index} table={table} />
           ))}
         </div>
       </div>
