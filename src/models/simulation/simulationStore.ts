@@ -17,10 +17,14 @@ const useSIMStore = create<IStore>()(
         try {
           set(() => ({ isLoading: true, error: null }));
           const table = useStore.getState().tables;
-          const users = processTable(
-            table.map((row) => row.map((cell) => cell.map((cell) => cell.v)))
+          const rawTable = table.map((row) =>
+            row.map((cell) => cell.map((cell) => cell.v))
           );
+          console.log("rawTable", rawTable);
+          const users = processTable(rawTable);
+          console.log("proccessed table", users);
           const simulationTable = simulate(users);
+          console.log("sim table", simulationTable);
           set((state) => {
             state.simulationTable = simulationTable;
             state.rawTable = simulationTable.map((row) =>

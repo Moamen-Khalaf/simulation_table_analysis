@@ -14,17 +14,8 @@ enum Methods {
   COUNT = "COUNT",
   IF = "IF",
 }
-export default function simulate(users: UserRow[]): cellType[][] {
+function simulateData(users: UserRow[], lastUser: UserRow) {
   let clock = 0;
-  const tableHeaders = Object.values(ColumnHeader);
-  let lastUser: UserRow = tableHeaders.reduce((acc, key) => {
-    acc[key as IColumnHeader] = {
-      v: "",
-      f: "",
-      pos: "0",
-    } as cellType;
-    return acc;
-  }, {} as UserRow);
   const usersData = users.map((user, index) => {
     clock += +user.INTERARRIVAL_TIME.v;
     const arrivalTime = +clock;
@@ -47,7 +38,6 @@ export default function simulate(users: UserRow[]): cellType[][] {
     user.TIME_SER_ENDS.v = timeServEnds.toString();
 
     user.CUST_STATE.v = custState;
-    // ! this is a bug , in cell H3
     if (index > 0) {
       user.ARRIVAL_TIME.f = `${user.INTERARRIVAL_TIME.pos}+${lastUser.ARRIVAL_TIME.pos}`;
       user.TIME_SER_BEG.f = `${Methods.MAX}(${user.ARRIVAL_TIME.pos},${lastUser.TIME_SER_ENDS.pos})`;
@@ -61,6 +51,15 @@ export default function simulate(users: UserRow[]): cellType[][] {
     lastUser = user;
     return user;
   });
+  return usersData;
+}
+export default function simulate(users: UserRow[]): cellType[][] {
+  const tableHeaders = Object.values(ColumnHeader);
+  const lastUser = tableHeaders.reduce(
+    (acc, key) => ({ ...acc, [key]: { v: "0", pos: "" } }),
+    {} as UserRow
+  );
+  const usersData = simulateData(users, lastUser);
   const simulationTable = [
     tableHeaders.map((key, index) => ({
       v: key,
@@ -71,6 +70,5 @@ export default function simulate(users: UserRow[]): cellType[][] {
       return tableHeaders.map((key) => user[key as IColumnHeader]);
     }),
   ] as cellType[][];
-
   return simulationTable;
 }

@@ -2,18 +2,18 @@ import useStore from "../models/table";
 import Button from "./Button";
 import Preview from "./Preview";
 import useSIMStore from "../models/simulation/simulationStore";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 function Input() {
   const setTables = useStore((state) => state.setTables);
   const isLoading = useStore((state) => state.isLoading);
   const clearTables = useStore((state) => state.clear);
   const error = useStore((state) => state.error);
+  const fileName = useStore((state) => state.fileName);
 
   const clearMain = useSIMStore((state) => state.clear);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const [fileName, setFileName] = useState<string | null>(null);
   return (
     <div className="p-4 mt-5 bg-white shadow-md rounded-md mx-2 md:mx-10 lg:mx-20">
       <div className="flex items-center gap-3 justify-between">
@@ -38,8 +38,7 @@ function Input() {
               reader.onload = (e) => {
                 const buffer = e.target?.result;
                 if (buffer instanceof ArrayBuffer) {
-                  setTables(buffer);
-                  setFileName(file.name);
+                  setTables(buffer, file.name);
                 }
               };
               reader.readAsArrayBuffer(file);
@@ -55,7 +54,6 @@ function Input() {
             }
             clearTables();
             clearMain();
-            setFileName(null);
           }}
         >
           {isLoading ? "Cancel" : "Clear"}

@@ -25,10 +25,10 @@ export default function parseExcel(fileBuffer: BufferSource) {
     }
     tables[tables.length - 1].push(row as string[]);
   });
-
-  return tables.map((table) =>
+  const parcedTables = tables.map((table) =>
     table.map((row) => row.map((cell) => ({ v: cell, pos: "", f: "" })))
   );
+  return parcedTables;
 }
 export function getPosition(colIndex: number, rowIndex: number) {
   return XLSX.utils.encode_cell({ c: colIndex, r: rowIndex });

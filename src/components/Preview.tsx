@@ -10,6 +10,7 @@ export default function Preview() {
   const tables: cellType[][][] = useStore((state) => state.tables);
   const [refresh, setRefresh] = useState(false);
   const [preview, setPreview] = useState(false);
+  const selectedCell = useStore((state) => state.selectedCell);
   return tables.length ? (
     <>
       <div className="flex justify-between items-center flex-col scale-90 md:flex-row md:scale-100">
@@ -19,6 +20,8 @@ export default function Preview() {
         <input
           type="text"
           name="cellValue"
+          value={selectedCell?.pos || ""}
+          onChange={() => {}}
           className="flex-grow px-2 py-1 border border-gray-400 rounded-md mx-5 outline-none"
         />
         <Button
