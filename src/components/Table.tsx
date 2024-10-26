@@ -78,18 +78,23 @@ export default function Table({ table }: TableProps) {
           <tr
             key={rowIndex}
             onMouseOver={(e) => {
+              if (
+                (e.target as HTMLTableCellElement).classList.contains(
+                  "row-header"
+                )
+              ) {
+                return;
+              }
               const element = e.target as HTMLInputElement;
               element.style.backgroundColor = "#f3f4f6";
-              const lastColor = element.style.color;
               element.style.color = "#000";
               element.addEventListener("mouseleave", () => {
                 element.style.backgroundColor = "";
-                element.style.color = lastColor;
               });
             }}
           >
             <td
-              className={`border border-gray-400 px-4 py-2 bg-[#2563eb] text-white ${
+              className={`row-header border border-gray-400 px-4 py-2 bg-[#2563eb] text-white ${
                 selectedRow === `${rowIndex + 1}` ? "bg-[#2d4e94]" : ""
               }`}
             >

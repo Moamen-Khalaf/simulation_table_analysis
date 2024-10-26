@@ -33,7 +33,8 @@ function mergeTables(users: UserRow[], services: Service[]): UserRow[] {
     const service = servicesMap[user.ISSUE_CODE.v];
     const userData = {
       ...user,
-      ...service,
+      // Deep copy service to avoid reference modification
+      ...(service ? JSON.parse(JSON.stringify(service)) : {}),
     } as UserRow;
     const computedPos = setPositions(userData, tableHeaders, rowIndex);
     return computedPos;
@@ -54,7 +55,6 @@ function processRows(header: string[], rows: string[][]): UserRow[] {
     });
     return item;
   });
-
   return proccessedRows;
 }
 
