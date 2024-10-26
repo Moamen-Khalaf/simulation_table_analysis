@@ -32,8 +32,11 @@ const useSIMStore = create<IStore>()(
             );
           });
         } catch (error) {
-          console.error(error);
-          set(() => ({ error: (error as Error).message }));
+          set((state) => {
+            state.error = (error as Error).message;
+            state.simulationTable = [];
+            state.rawTable = [];
+          });
         } finally {
           set(() => ({ isLoading: false }));
         }

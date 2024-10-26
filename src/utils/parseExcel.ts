@@ -34,7 +34,7 @@ export default function parseExcel(fileBuffer: BufferSource): cellType[][][] {
       }))
     )
   );
-  console.log("parcedTables", parcedTables);
+
   return parcedTables;
 }
 export function getPosition(colIndex: number, rowIndex: number) {

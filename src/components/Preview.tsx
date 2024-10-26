@@ -11,8 +11,9 @@ export default function Preview() {
   const [refresh, setRefresh] = useState(false);
   const [preview, setPreview] = useState(false);
   const selectedCell = useStore((state) => state.selectedCell);
+  const error = useSIMStore((state) => state.error);
   return tables.length ? (
-    <>
+    <div className="transition-opacity duration-500 ease-in-out opacity-100">
       <div className="flex justify-between items-center flex-col scale-90 md:flex-row md:scale-100">
         <Button onClick={() => setPreview(!preview)}>
           {preview ? "Hide" : "Show"} Preview
@@ -55,7 +56,19 @@ export default function Preview() {
           ))}
         </div>
       </div>
-    </>
+      {error && (
+        <div className="text-center ">
+          <p className="text-red-500">
+            Error loading data. Please ensure all essential tables are included.
+          </p>
+          <img
+            src={"example.png"}
+            alt="error"
+            className="aspect-square w-[40%] mx-auto"
+          />
+        </div>
+      )}
+    </div>
   ) : (
     <div className="text-center">There are no tables.</div>
   );

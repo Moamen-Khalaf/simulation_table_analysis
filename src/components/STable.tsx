@@ -8,7 +8,6 @@ import { getDataExcel } from "../utils/parseExcel";
 function STable() {
   const simulationTable = useSIMStore((state) => state.simulationTable);
   const setTableData = useSIMStore((state) => state.setTableData);
-  const error = useSIMStore((state) => state.error);
   const isLoading = useSIMStore((state) => state.isLoading);
 
   useEffect(() => {
@@ -28,18 +27,7 @@ function STable() {
       style={{ opacity: simulationTable.length ? 1 : 0 }}
     >
       {isLoading && <div className="text-center">Loading...</div>}
-      {error && (
-        <div className="text-center">
-          <p className="text-red-500">
-            Error loading data. Please ensure all essential tables are included.
-          </p>
-          <img
-            src={"example.png"}
-            alt="error"
-            className="aspect-square w-[40%] mx-auto"
-          />
-        </div>
-      )}
+
       {simulationTable.length ? (
         <>
           <Table table={simulationTable} />
