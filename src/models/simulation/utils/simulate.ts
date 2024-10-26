@@ -47,6 +47,7 @@ export default function simulate(users: UserRow[]): cellType[][] {
     user.TIME_SER_ENDS.v = timeServEnds.toString();
 
     user.CUST_STATE.v = custState;
+    // ! this is a bug , in cell H3
     if (index > 0) {
       user.ARRIVAL_TIME.f = `${user.INTERARRIVAL_TIME.pos}+${lastUser.ARRIVAL_TIME.pos}`;
       user.TIME_SER_BEG.f = `${Methods.MAX}(${user.ARRIVAL_TIME.pos},${lastUser.TIME_SER_ENDS.pos})`;

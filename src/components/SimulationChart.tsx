@@ -1,97 +1,87 @@
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
   Tooltip,
   Legend,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
+  ResponsiveContainer,
+} from "recharts";
 import useSIMStore from "../models/simulation/simulationStore";
+import type { cellType } from "../models/simulation/types";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+function transformData(data: cellType[][]) {
+  const chartData = data.slice(1).map((row, index) => {
+    return {
+      clientId: index + 1,
+      customerArrivalTime: +row[2].v,
+      customerServiceStartsTime: +row[5].v,
+      customerWaitTime: isNaN(+row[8].v) ? 0 : +row[8].v,
+      serverFreeTime: isNaN(+row[9].v) ? 0 : +row[9].v,
+    };
+  });
+  return chartData;
+}
 
-export default function SimulationChart() {
-  // Process data for the line chart
-  const simulationData = useSIMStore((state) => state.simulationTable);
+const SimulationChart = () => {
+  const rawData = useSIMStore((state) => state.simulationTable);
+  const chartData = transformData(rawData);
+  return rawData.length === 0 ? null : (
+    <div className="px-4 my-10 mx-auto w-[80%]">
+      <ResponsiveContainer width="100%" height={400}>
+        <LineChart
+          data={chartData}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="clientId"
+            label={{
+              value: "Client ID",
+              position: "insideBottomRight",
+              offset: -5,
+            }}
+          />
+          <YAxis
+            label={{ value: "Time (mins)", angle: -90, position: "insideLeft" }}
+          />
+          <Tooltip />
+          <Legend />
 
-  const lineChartData = {
-    labels: simulationData.slice(1).map((row) => `Client ${row[0].v}`),
-    datasets: [
-      {
-        label: "Arrival Time",
-        data: simulationData.slice(1).map((row) => Number(row[2]?.v || 0)),
-        borderColor: "#3b82f6", // blue-500
-        backgroundColor: "rgba(59, 130, 246, 0.9)", // blue-500 with opacity
-      },
-      {
-        label: "Service Begin Time",
-        data: simulationData.slice(1).map((row) => Number(row[5]?.v || 0)),
-        borderColor: "#10b981", // emerald-500
-        backgroundColor: "rgba(16, 185, 129, 0.9)", // emerald-500 with opacity
-      },
-      {
-        label: "Service End Time",
-        data: simulationData.slice(1).map((row) => Number(row[7]?.v || 0)),
-        borderColor: "#f59e0b", // amber-500
-        backgroundColor: "rgba(245, 158, 11, 0.9)", // amber-500 with opacity
-      },
-    ],
-  };
+          {/* Line for customer arrival times */}
+          <Line
+            type="monotone"
+            dataKey="customerArrivalTime"
+            stroke="#1f77b4"
+          />
 
-  const lineChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-      title: {
-        display: true,
-        text: "Time-based Data Visualization",
-        color: "#374151", // gray-700
-      },
-    },
-    scales: {
-      x: {
-        type: "category" as const,
-        grid: {
-          color: "#e5e7eb", // gray-200
-        },
-        ticks: {
-          color: "#4b5563", // gray-600
-        },
-      },
-      y: {
-        grid: {
-          color: "#e5e7eb", // gray-200
-        },
-        ticks: {
-          color: "#4b5563", // gray-600
-        },
-      },
-    },
-  };
+          {/* Line for customer service start times */}
+          <Line
+            type="monotone"
+            dataKey="customerServiceStartsTime"
+            stroke="#ff7f0e"
+          />
 
-  return (
-    <div className="w-[89%] mx-auto my-10 flex flex-col gap-3">
-      <div className="p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">
-          Time-based Data
-        </h2>
-        <Line options={lineChartOptions} data={lineChartData} />
-      </div>
+          {/* Line for customer wait times */}
+          <Line
+            type="monotone"
+            dataKey="customerWaitTime"
+            stroke="#2ca02c"
+            activeDot={{ r: 8 }}
+          />
+
+          {/* Line for server free times */}
+          <Line type="monotone" dataKey="serverFreeTime" stroke="#d62728" />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
-}
+};
+
+export default SimulationChart;

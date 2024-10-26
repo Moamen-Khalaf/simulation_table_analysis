@@ -55,6 +55,7 @@ function Input() {
             }
             clearTables();
             clearMain();
+            setFileName(null);
           }}
         >
           {isLoading ? "Cancel" : "Clear"}

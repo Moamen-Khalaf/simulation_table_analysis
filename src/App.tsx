@@ -6,8 +6,8 @@ function App() {
   return (
     <>
       <Input />
-      <SimulationChart />
       <STable />
+      <SimulationChart />
     </>
   );
 }
