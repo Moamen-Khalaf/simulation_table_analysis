@@ -1,7 +1,7 @@
 import * as XLSX from "xlsx";
 import type { cellType } from "../models/simulation/types";
 
-export default function parseExcel(fileBuffer: BufferSource) {
+export default function parseExcel(fileBuffer: BufferSource): cellType[][][] {
   const workbook = XLSX.read(fileBuffer, { type: "buffer", raw: true });
 
   const sheetName = workbook.SheetNames[0];
@@ -26,8 +26,15 @@ export default function parseExcel(fileBuffer: BufferSource) {
     tables[tables.length - 1].push(row as string[]);
   });
   const parcedTables = tables.map((table) =>
-    table.map((row) => row.map((cell) => ({ v: cell, pos: "", f: "" })))
+    table.map((row, rowIndex) =>
+      row.map((cell, colIndex) => ({
+        v: cell,
+        f: "",
+        pos: getPosition(colIndex, rowIndex),
+      }))
+    )
   );
+  console.log("parcedTables", parcedTables);
   return parcedTables;
 }
 export function getPosition(colIndex: number, rowIndex: number) {

@@ -20,11 +20,11 @@ const useSIMStore = create<IStore>()(
           const rawTable = table.map((row) =>
             row.map((cell) => cell.map((cell) => cell.v))
           );
-          console.log("rawTable", rawTable);
+
           const users = processTable(rawTable);
-          console.log("proccessed table", users);
+
           const simulationTable = simulate(users);
-          console.log("sim table", simulationTable);
+
           set((state) => {
             state.simulationTable = simulationTable;
             state.rawTable = simulationTable.map((row) =>

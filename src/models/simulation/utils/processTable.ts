@@ -15,10 +15,8 @@ export function processTable(table: string[][][]): UserRow[] {
   const [serviceHeader, ...serviceRows] = table[0];
   const servicesTable = processRows(serviceHeader, serviceRows) as Service[];
 
-  console.log("Processed Service Data", servicesTable);
-
   const mergedTable = mergeTables(usersTable, servicesTable);
-  console.log("Processed User Data", mergedTable);
+
   return mergedTable;
 }
 
@@ -40,7 +38,6 @@ function mergeTables(users: UserRow[], services: Service[]): UserRow[] {
     const computedPos = setPositions(userData, tableHeaders, rowIndex);
     return computedPos;
   });
-  console.log("Merged User Data", usersData);
 
   return usersData;
 }
@@ -57,7 +54,7 @@ function processRows(header: string[], rows: string[][]): UserRow[] {
     });
     return item;
   });
-  console.log("Processed Rows", proccessedRows);
+
   return proccessedRows;
 }
 
