@@ -42,7 +42,7 @@ function simulateData(users: UserRow[], lastUser: UserRow) {
       user.ARRIVAL_TIME.f = `${user.INTERARRIVAL_TIME.pos}+${lastUser.ARRIVAL_TIME.pos}`;
       user.TIME_SER_BEG.f = `${Methods.MAX}(${user.ARRIVAL_TIME.pos},${lastUser.TIME_SER_ENDS.pos})`;
       user.TIME_SER_ENDS.f = `${user.TIME_SER_BEG.pos}+${user.SERVICE_TIME.pos}`;
-      user.CUST_STATE.f = `${Methods.IF}(${user.TIME_SER_BEG.pos}>${user.ARRIVAL_TIME.pos},${custState},"SERV")`;
+      user.CUST_STATE.f = `${Methods.IF}(${user.TIME_SER_BEG.pos}>${user.ARRIVAL_TIME.pos},${user.TIME_SER_BEG.pos}-${user.ARRIVAL_TIME.pos},"SERV")`;
       user.SYSTEM_STATE.f = `${Methods.IF}(${user.ARRIVAL_TIME.pos}-${lastUser.TIME_SER_ENDS.pos}>0,${user.ARRIVAL_TIME.pos}-${lastUser.TIME_SER_ENDS.pos},"BUSY")`;
     }
 

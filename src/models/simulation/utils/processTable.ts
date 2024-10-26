@@ -33,8 +33,8 @@ function mergeTables(users: UserRow[], services: Service[]): UserRow[] {
     const service = servicesMap[user.ISSUE_CODE.v];
     const userData = {
       ...user,
-      // Deep copy service to avoid reference modification
-      ...(service ? JSON.parse(JSON.stringify(service)) : {}),
+      // Create a deep copy of the service object using structuredClone
+      ...(service ? structuredClone(service) : {}),
     } as UserRow;
     const computedPos = setPositions(userData, tableHeaders, rowIndex);
     return computedPos;

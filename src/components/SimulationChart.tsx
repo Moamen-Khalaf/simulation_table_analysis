@@ -28,7 +28,7 @@ const SimulationChart = () => {
   const rawData = useSIMStore((state) => state.simulationTable);
   const chartData = transformData(rawData);
   return rawData.length === 0 ? null : (
-    <div className="px-4 my-10 mx-auto w-[80%]">
+    <div className="px-4 my-10 mx-auto md:w-[80%]">
       <ResponsiveContainer width="100%" height={400}>
         <LineChart
           data={chartData}

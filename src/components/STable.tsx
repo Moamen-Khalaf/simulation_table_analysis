@@ -24,12 +24,21 @@ function STable() {
   }, [setTableData]);
   return (
     <div
-      className="scale-90 transition-opacity duration-500 ease-in-out overflow-auto"
+      className="transition-opacity duration-500 ease-in-out overflow-auto w-full mx-2 md:w-[95%] md:mx-auto my-5"
       style={{ opacity: simulationTable.length ? 1 : 0 }}
     >
       {isLoading && <div className="text-center">Loading...</div>}
       {error && (
-        <div className="text-center text-red-500 text-[1rem] my-5">{error}</div>
+        <div className="text-center">
+          <p className="text-red-500">
+            Error loading data. Please ensure all essential tables are included.
+          </p>
+          <img
+            src={"example.png"}
+            alt="error"
+            className="aspect-square w-[40%] mx-auto"
+          />
+        </div>
       )}
       {simulationTable.length ? (
         <>
